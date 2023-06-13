@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] public int playerIndex = 0;
     private float movementSpeed = 5f;
     private float maxZOffset = 100f;//1f;
     private Rigidbody rb;
@@ -20,5 +21,10 @@ public class PlayerController : MonoBehaviour
         Vector3 newPosition = transform.position + movement * Time.deltaTime;
         newPosition.z = Mathf.Clamp(newPosition.z, startPosition.z - maxZOffset, startPosition.z + maxZOffset);
         rb.MovePosition(newPosition);
+    }
+
+    public void SetIndex(int index)
+    {
+        playerIndex = index;
     }
 }
