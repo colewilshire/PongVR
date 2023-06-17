@@ -8,10 +8,12 @@ public class BallController : MonoBehaviour
     private float currentSpeed;
     private Vector3 direction;
     private Rigidbody rb;
+    private AudioSource[] audioSources;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSources = GetComponents<AudioSource>();
 
         ResetBall();
     }
@@ -46,14 +48,18 @@ public class BallController : MonoBehaviour
             {
                 direction = Vector3.Scale(direction, new Vector3(-1, 1, 1));
             }
+
+            PlaySound(0);
         }
         else if (collision.gameObject.CompareTag("Goal"))
         {
             ResetBall();
+            PlaySound(1);
         }
         else
         {
             direction = Vector3.Reflect(direction, pointOfContact.normal);
+            PlaySound(1);
         }
     }
 
@@ -71,5 +77,10 @@ public class BallController : MonoBehaviour
 
         direction = transform.forward * randomSign;
         currentSpeed = initialSpeed;
+    }
+
+    private void PlaySound(int soundIndex = 0)
+    {
+        audioSources[soundIndex].Play();
     }
 }

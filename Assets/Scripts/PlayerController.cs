@@ -12,9 +12,6 @@ public class PlayerController : MonoBehaviour
     private float move;
     private InputAction moveAction;
 
-    private float gravity = 3.0f;
-    private float sensitivity = 3.0f;
-
     private void Awake()
     {
         controls = new Controls();
