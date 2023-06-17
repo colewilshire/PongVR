@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -7,6 +8,32 @@ public class PlayerController : MonoBehaviour
     private float maxZOffset = 100f;//1f;
     private Rigidbody rb;
     private Vector3 startPosition;
+    private Controls controls;
+    private float move;
+    private InputAction moveAction;
+
+    private float gravity = 3.0f;
+    private float sensitivity = 3.0f;
+
+    private void Awake()
+    {
+        controls = new Controls();
+        moveAction = controls.Player.Move;
+    }
+
+    void OnEnable()
+    {
+        moveAction.performed += OnMove;
+        moveAction.canceled += OnMoveEnd;
+        moveAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction.performed -= OnMove;
+        moveAction.canceled -= OnMoveEnd;
+        moveAction.Disable();
+    }
 
     private void Start()
     {
@@ -16,15 +43,25 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(moveHorizontal * movementSpeed, 0f, 0f);
+        Move();
+    }
+
+    private void Move()
+    {
+        Vector3 movement = new Vector3(move * movementSpeed, 0f, 0f);
         Vector3 newPosition = transform.position + movement * Time.deltaTime;
+
         newPosition.z = Mathf.Clamp(newPosition.z, startPosition.z - maxZOffset, startPosition.z + maxZOffset);
         rb.MovePosition(newPosition);
     }
 
-    public void SetIndex(int index)
+    private void OnMove(InputAction.CallbackContext context)
     {
-        playerIndex = index;
+        move = context.ReadValue<float>();
+    }
+
+    private void OnMoveEnd(InputAction.CallbackContext context)
+    {
+        move = 0;
     }
 }
