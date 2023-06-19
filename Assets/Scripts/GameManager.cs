@@ -1,43 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
-    // Flag to keep track of game pause state
-    public bool isGamePaused = false;
-    
-    // Update is called once per frame
-    void Update()
+    [SerializeField] Canvas pauseMenuCanvas;
+    private Controls controls;
+    private float move;
+    private InputAction pauseAction;
+    private bool isPaused = false;
+    private UIManager uiManager;
+
+    private void Awake()
     {
-        // Check for pause input (e.g., pressing 'P' key)
-        if (Input.GetKeyDown(KeyCode.P))
+        controls = new Controls();
+        pauseAction = controls.Menu.Pause;
+    }
+
+    void OnEnable()
+    {
+        pauseAction.performed += OnPause;
+        pauseAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        pauseAction.performed -= OnPause;
+        pauseAction.Disable();
+    }
+
+    private void Start()
+    {
+        uiManager = FindObjectOfType<UIManager>();
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        isPaused = !isPaused;
+
+        if (isPaused)
         {
-            // Toggle game pause state
-            if (isGamePaused)
-            {
-                ResumeGame();
-            }
-            else
-            {
-                PauseGame();
-            }
+            PauseGame();
+        }
+        else
+        {
+            ResumeGame();
         }
     }
 
-    public void PauseGame()
+    private void PauseGame()
     {
-        // Set time scale to 0 to pause the game
+        uiManager.OpenMenu("Pause Menu");
         Time.timeScale = 0f;
-        isGamePaused = true;
-        // TODO: Add code to display pause menu if desired
     }
 
-    public void ResumeGame()
+    private void ResumeGame()
     {
-        // Set time scale to 1 to resume the game
+        uiManager.CloseMenu();
         Time.timeScale = 1f;
-        isGamePaused = false;
-        // TODO: Add code to hide pause menu if desired
     }
 }
