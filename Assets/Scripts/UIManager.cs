@@ -6,15 +6,22 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject[] menus;
     private GameObject activeMenu;
     private Dictionary<string, GameObject> indexedMenus = new Dictionary<string, GameObject>();
+    public static UIManager Instance { get; private set; } = null;
 
-    private void Start()
-    {
-        IndexMenus();
-
-        foreach (string key in indexedMenus.Keys)
+	private void Awake()
+	{
+		if (Instance == null)
         {
-            Debug.Log(key);
+			Instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
+		else
+		{
+			Destroy(gameObject);
+			return;
+		}
+
+        IndexMenus();
     }
 
     private void IndexMenus()
