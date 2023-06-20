@@ -1,14 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenu : Menu<MainMenu>
 {
     [SerializeField] Button startGameButton;
-    GameManager gameManager;
 
     private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
-        startGameButton.onClick.AddListener(gameManager.StartGame);
+        startGameButton.onClick.AddListener(GameManager.Instance.StartMatch);
+    }
+
+    private void OnDestroy()
+    {
+        startGameButton.onClick.RemoveListener(GameManager.Instance.StartMatch);
     }
 }

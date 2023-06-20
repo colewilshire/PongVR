@@ -2,50 +2,45 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     private Controls controls;
-    private float move;
     private InputAction pauseAction;
-    [SerializeField] private UIManager uiManager;
     private bool isPaused = false;
-    public static GameManager Instance { get; private set; } = null;
+    private string mainMenuSceneName = "MainMenuScene";
+    private string matchSceneName = "MatchScene";
 
-	private void Awake()
-	{
-		if (Instance == null)
-        {
-			Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-		else
-		{
-			Destroy(gameObject);
-			return;
-		}
-
-        controls = new Controls();
-        pauseAction = controls.Menu.Pause;
-	}
-
-    void OnEnable()
+    protected override void Awake()
     {
-        pauseAction.performed += OnPause;
-        pauseAction.Enable();
+        base.Awake();
+
+        SetUpInputs();
     }
 
-    // private void OnDisable()
-    // {
-    //     Debug.Log(pauseAction);
-    //     pauseAction.performed -= OnPause;
-    //     pauseAction.Disable();
-    // }
+    private void OnDestroy()
+    {
+        DisableInputs();
+    }
 
     private void Start()
     {
-        uiManager = FindObjectOfType<UIManager>();
+        OpenMainMenu();
+    }
 
-        uiManager.OpenMenu("Main Menu");
+    private void SetUpInputs()
+    {
+        controls = new Controls();
+        pauseAction = controls.Menu.Pause;
+        pauseAction.performed += OnPause;
+
+        pauseAction.Enable();
+    }
+
+    private void DisableInputs()
+    {
+        pauseAction.performed -= OnPause;
+
+        pauseAction.Disable();
     }
 
     private void OnPause(InputAction.CallbackContext context)
@@ -63,40 +58,46 @@ public class GameManager : MonoBehaviour
     private void PauseGame()
     {
         isPaused = true;
+        PauseMenu.Instance.ShowUI(true);
         Time.timeScale = 0f;
-        uiManager.OpenMenu("Pause Menu");
     }
 
-    private void ResetScene()
+    private void ChangeScene(string sceneName)
     {
-        string currentSceneName = SceneManager.GetActiveScene().name;
-
-        SceneManager.LoadScene(currentSceneName);
-    }
-    
-    public void StartGame()
-    {
-        uiManager.CloseMenu();
-        SceneManager.LoadScene("GameScene");
+        if (SceneManager.GetActiveScene().name != sceneName)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 
     public void ResumeGame()
     {
         isPaused = false;
+        PauseMenu.Instance.ShowUI(false);
         Time.timeScale = 1f;
-        uiManager.CloseMenu();
     }
 
-    public void EndGame(int winnerIndex)
+    public void StartMatch()
     {
-        ResetScene();
+        MainMenu.Instance.ShowUI(false);
+        Scoreboard.Instance.ResetScore();
+        ChangeScene(matchSceneName);
+        Scoreboard.Instance.ShowUI(true);
     }
 
-    public void ExitToMainMenu()
+    public void EndMatch() //Controlled by score?
     {
-        SceneManager.LoadScene("MainMenuScene");
+        //Change scene
+        //Show end game menu
+        OpenMainMenu();
+    }
+
+    public void OpenMainMenu()
+    {
         ResumeGame();
-        uiManager.OpenMenu("Main Menu");
+        Scoreboard.Instance.ShowUI(false);
+        ChangeScene(mainMenuSceneName);
+        MainMenu.Instance.ShowUI(true);
     }
 
     public void ExitToDesktop()

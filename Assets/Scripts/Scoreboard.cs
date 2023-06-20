@@ -1,17 +1,11 @@
 using TMPro;
 using UnityEngine;
 
-public class Scoreboard : MonoBehaviour
+public class Scoreboard : Menu<Scoreboard>
 {
     private int maxPoints = 2;
     private int[] score = {0, 0};
     [SerializeField] private TMP_Text[] scoreCounters;
-    GameManager gameManager;
-
-    private void Start()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-    }
 
     public void AddPoint(int playerIndex, int numPoints = 1)
     {
@@ -21,7 +15,7 @@ public class Scoreboard : MonoBehaviour
         if (score[playerIndex] >= maxPoints)
         {
             ResetScore();
-            gameManager.EndGame(playerIndex);
+            GameManager.Instance.EndMatch();
         }
     }
 
@@ -30,7 +24,7 @@ public class Scoreboard : MonoBehaviour
         scoreCounter.text = score.ToString();
     }
 
-    private void ResetScore()
+    public void ResetScore()
     {
         for (int i = 0; i < score.Length; ++i)
         {

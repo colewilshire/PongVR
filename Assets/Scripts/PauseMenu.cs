@@ -1,18 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenu : Menu<PauseMenu>
 {
     [SerializeField] Button resumeButton;
     [SerializeField] Button mainMenuButton;
     [SerializeField] Button exitGameButton;
-    GameManager gameManager;
 
     private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
-        resumeButton.onClick.AddListener(gameManager.ResumeGame);
-        mainMenuButton.onClick.AddListener(gameManager.ExitToMainMenu);
-        exitGameButton.onClick.AddListener(gameManager.ExitToDesktop);
+        resumeButton.onClick.AddListener(GameManager.Instance.ResumeGame);
+        mainMenuButton.onClick.AddListener(GameManager.Instance.OpenMainMenu);
+        exitGameButton.onClick.AddListener(GameManager.Instance.ExitToDesktop);
+    }
+
+    private void OnDestroy()
+    {
+        resumeButton.onClick.RemoveListener(GameManager.Instance.ResumeGame);
+        mainMenuButton.onClick.RemoveListener(GameManager.Instance.OpenMainMenu);
+        exitGameButton.onClick.RemoveListener(GameManager.Instance.ExitToDesktop);
     }
 }
