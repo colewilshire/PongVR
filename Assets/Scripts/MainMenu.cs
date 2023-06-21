@@ -1,17 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : Menu<MainMenu>
+public class MainMenu : UIElement<MainMenu>
 {
     [SerializeField] Button startGameButton;
-
-    private void Start()
+    protected override UIState[] ValidStates { get; } =
     {
+        UIState.MainMenu
+    };
+
+    protected override void Start()
+    {
+        base.Start();
+
         startGameButton.onClick.AddListener(GameManager.Instance.StartMatch);
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         startGameButton.onClick.RemoveListener(GameManager.Instance.StartMatch);
     }
 }

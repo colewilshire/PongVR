@@ -9,7 +9,11 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
         if (Instance == null)
         {
             Instance = this as T;
-            DontDestroyOnLoad(gameObject);
+
+            if (!transform.parent)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
         }
         else
         {

@@ -1,22 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PauseMenu : UIElement<PauseMenu>
+public class ResultsMenu : UIElement<ResultsMenu>
 {
-
-    [SerializeField] Button resumeButton;
+    [SerializeField] Button rematchButton;
     [SerializeField] Button mainMenuButton;
     [SerializeField] Button exitGameButton;
     protected override UIState[] ValidStates { get; } =
     {
-        UIState.Pause
+        UIState.MatchEnded
     };
 
     protected override void Start()
     {
         base.Start();
 
-        resumeButton.onClick.AddListener(GameManager.Instance.ResumeMatch);
+        rematchButton.onClick.AddListener(GameManager.Instance.StartMatch);
         mainMenuButton.onClick.AddListener(GameManager.Instance.ReturnToMainMenu);
         exitGameButton.onClick.AddListener(GameManager.Instance.ExitToDesktop);
     }
@@ -25,7 +24,7 @@ public class PauseMenu : UIElement<PauseMenu>
     {
         base.OnDestroy();
 
-        resumeButton.onClick.RemoveListener(GameManager.Instance.ResumeMatch);
+        rematchButton.onClick.RemoveListener(GameManager.Instance.StartMatch);
         mainMenuButton.onClick.RemoveListener(GameManager.Instance.ReturnToMainMenu);
         exitGameButton.onClick.RemoveListener(GameManager.Instance.ExitToDesktop);
     }

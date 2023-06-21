@@ -6,7 +6,6 @@ public class GameManager : Singleton<GameManager>
 {
     private Controls controls;
     private InputAction pauseAction;
-    private bool isPaused = false;
     private string mainMenuSceneName = "MainMenuScene";
     private string matchSceneName = "MatchScene";
 
@@ -20,11 +19,6 @@ public class GameManager : Singleton<GameManager>
     private void OnDestroy()
     {
         DisableInputs();
-    }
-
-    private void Start()
-    {
-        OpenMainMenu();
     }
 
     private void SetUpInputs()
@@ -45,69 +39,44 @@ public class GameManager : Singleton<GameManager>
 
     private void OnPause(InputAction.CallbackContext context)
     {
-        if (!isPaused)
+        if (UIController.Instance.CurrentState == UIState.Pause)
         {
-            OpenPauseMenu();
+            UIController.Instance.SetState(UIState.MatchInProgress);
         }
-        else
+        else if (UIController.Instance.CurrentState == UIState.MatchInProgress)
         {
-            ClosePauseMenu();
-        }
-    }
-
-    private void OpenPauseMenu()
-    {
-        PauseGame();
-        PauseMenu.Instance.ShowUI(true);
-    }
-
-    private void ClosePauseMenu()
-    {
-        PauseMenu.Instance.ShowUI(false);
-        ResumeGame();
-    }
-
-    private void PauseGame()
-    {
-        isPaused = true;
-        Time.timeScale = 0f;
-    }
-
-    private void ChangeScene(string sceneName)
-    {
-        if (SceneManager.GetActiveScene().name != sceneName)
-        {
-            SceneManager.LoadScene(sceneName);
+            UIController.Instance.SetState(UIState.Pause);
         }
     }
 
-    public void ResumeGame()
+    private void SetScene(string sceneName, UIState? state)
     {
-        isPaused = false;
-        PauseMenu.Instance.ShowUI(false);
-        Time.timeScale = 1f;
+        SceneManager.LoadScene(sceneName);
+
+        if (state.HasValue)
+        {
+            UIController.Instance.SetState(state.Value);
+        }
     }
 
     public void StartMatch()
     {
-        MainMenu.Instance.ShowUI(false);
-        Scoreboard.Instance.ResetScore();
-        ChangeScene(matchSceneName);
-        Scoreboard.Instance.ShowUI(true);
+        SetScene(matchSceneName, UIState.MatchInProgress);
+    }
+
+    public void ResumeMatch()
+    {
+        UIController.Instance.SetState(UIState.MatchInProgress);
     }
 
     public void EndMatch()
     {
-        PauseGame();
-        MatchEndMenu.Instance.ShowUI(true);
+        UIController.Instance.SetState(UIState.MatchEnded);
     }
 
-    public void OpenMainMenu()
+    public void ReturnToMainMenu()
     {
-        ResumeGame();
-        Scoreboard.Instance.ShowUI(false);
-        ChangeScene(mainMenuSceneName);
-        MainMenu.Instance.ShowUI(true);
+        SetScene(mainMenuSceneName, UIState.MainMenu);
     }
 
     public void ExitToDesktop()
