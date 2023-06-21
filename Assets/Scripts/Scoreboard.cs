@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class Scoreboard : UIElement<Scoreboard>
 {
-    private int maxPoints = 2;
-    private int[] score = {0, 0};
+    [SerializeField] private int maxPoints = 11;
     [SerializeField] private TMP_Text[] scoreCounters;
+    private int[] score = {0, 0};
     protected override UIState[] ValidStates { get; } =
     {
         UIState.MatchInProgress,

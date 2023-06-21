@@ -2048,6 +2048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d533c98cd202e5543b4632036c52c715, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxPoints: 11
   scoreCounters:
   - {fileID: 1477648389}
   - {fileID: 896256357}

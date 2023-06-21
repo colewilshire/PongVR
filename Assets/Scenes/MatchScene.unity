@@ -463,12 +463,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 164264011}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a924f2dc98f5dae4c96ffdfc89b113d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8518d5ce1cdde0f4fa32784d70796a22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerIndex: 0
+  ball: {fileID: 1240948050}
 --- !u!1 &648114409
 GameObject:
   m_ObjectHideFlags: 0
