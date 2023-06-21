@@ -20,6 +20,7 @@ public class BallController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        rb.angularVelocity = Vector3.zero;
         rb.MovePosition(rb.position + direction * currentSpeed * Time.fixedDeltaTime);
     }
 

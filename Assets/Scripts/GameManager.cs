@@ -47,18 +47,29 @@ public class GameManager : Singleton<GameManager>
     {
         if (!isPaused)
         {
-            PauseGame();
+            OpenPauseMenu();
         }
         else
         {
-            ResumeGame();
+            ClosePauseMenu();
         }
+    }
+
+    private void OpenPauseMenu()
+    {
+        PauseGame();
+        PauseMenu.Instance.ShowUI(true);
+    }
+
+    private void ClosePauseMenu()
+    {
+        PauseMenu.Instance.ShowUI(false);
+        ResumeGame();
     }
 
     private void PauseGame()
     {
         isPaused = true;
-        PauseMenu.Instance.ShowUI(true);
         Time.timeScale = 0f;
     }
 
@@ -85,11 +96,10 @@ public class GameManager : Singleton<GameManager>
         Scoreboard.Instance.ShowUI(true);
     }
 
-    public void EndMatch() //Controlled by score?
+    public void EndMatch()
     {
-        //Change scene
-        //Show end game menu
-        OpenMainMenu();
+        PauseGame();
+        MatchEndMenu.Instance.ShowUI(true);
     }
 
     public void OpenMainMenu()
